@@ -1,5 +1,5 @@
 //
-//  PostsViewController.swift
+//  PostFeedViewController.swift
 //  APIHomework
 //
 //  Created by Артём Сноегин on 25.10.2025.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PostsViewController: UIViewController {
+class PostFeedViewController: UIViewController {
     
     private let tableView = UITableView()
     private var posts = [Post]()
@@ -56,22 +56,27 @@ class PostsViewController: UIViewController {
     
     @objc private func createNewPost() {
         
-        let newPost = Post(title: "New Post", body: "Hello World")
+        let postCreateViewController = PostCreateViewController()
         
-        networkService.createNewPost(newPost) { [weak self] result in
+        postCreateViewController.completion = { [weak self] post in
             
-            switch result {
+            self?.networkService.createNewPost(post) { [weak self] result in
                 
-            case .success(let post):
-                
-                self?.posts.append(post)
-                self?.tableView.reloadData()
-                
-            case .failure(let error):
-                
-                print("Failed creating new post: \(error)")
+                switch result {
+                    
+                case .success(let post):
+                    
+                    self?.posts.append(post)
+                    self?.tableView.reloadData()
+                    
+                case .failure(let error):
+                    
+                    print("Failed creating new post: \(error)")
+                }
             }
         }
+        
+        navigationController?.pushViewController(postCreateViewController, animated: true)
     }
     
     private func configureTableView() {
@@ -91,7 +96,7 @@ class PostsViewController: UIViewController {
     }
 }
 
-extension PostsViewController: UITableViewDelegate, UITableViewDataSource {
+extension PostFeedViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -120,9 +125,10 @@ extension PostsViewController: UITableViewDelegate, UITableViewDataSource {
 
         let post = posts[indexPath.row]
         
+        print(post)
         let detailViewController = PostDetailViewController(post: post)
         
-        detailViewController.didUpdatePost = { [weak self] post in
+        detailViewController.completion = { [weak self] post in
             
             self?.networkService.updatePost(post) { [weak self] result in
                 

@@ -9,12 +9,11 @@ import UIKit
 
 class PostDetailViewController: UIViewController {
     
-    var didUpdatePost: ((Post) -> Void)?
+    var completion: ((Post) -> Void)?
     
     private var post: Post
     
-    private let titleTextView = UITextView()
-    private let bodyTextView = UITextView()
+    private var postView = PostView()
     
     init(post: Post) {
         
@@ -32,33 +31,25 @@ class PostDetailViewController: UIViewController {
         
         view.backgroundColor = .systemBackground
         
-        setupUI()
         configureNavigationBar()
+        setupPostView()
     }
-    
-    private func setupUI() {
 
-        titleTextView.text = post.title
-        titleTextView.font = .preferredFont(forTextStyle: .extraLargeTitle2)
-        titleTextView.isScrollEnabled = false
-        titleTextView.isEditable = false
+    private func setupPostView() {
         
-        bodyTextView.text = post.body
-        bodyTextView.font = .preferredFont(forTextStyle: .body)
-        bodyTextView.isScrollEnabled = false
-        bodyTextView.isEditable = false
+        postView = PostView(postTitle: post.title, postBody: post.body)
+        postView.canEdit(false)
         
-        let stackView = UIStackView(arrangedSubviews: [titleTextView, bodyTextView])
-        stackView.axis = .vertical
-        stackView.spacing = 0
+        postView.delegate = self
         
-        view.addSubview(stackView)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-
+        view.addSubview(postView)
+        postView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            postView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            postView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            postView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            postView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
@@ -71,22 +62,36 @@ class PostDetailViewController: UIViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
 
-        titleTextView.isEditable = editing
-        bodyTextView.isEditable = editing
+        postView.canEdit(editing)
 
         if editing {
             
-            bodyTextView.becomeFirstResponder()
+//            bodyTextView.becomeFirstResponder()
             editButtonItem.tintColor = .systemGreen
             
         } else {
             
+            completion?(post)
             view.endEditing(true)
-            editButtonItem.tintColor = .label
+            navigationController?.popViewController(animated: true)
+        }
+    }
+}
+
+extension PostDetailViewController: PostViewDelegate {
+    
+    func didChange(post: Post) {
+        
+        if post.title.isEmpty && post.body.isEmpty {
+
+            editButtonItem.isEnabled = false
+                
+        } else {
             
-            post.title = titleTextView.text
-            post.body = bodyTextView.text
-            didUpdatePost?(post)
+            editButtonItem.isEnabled = true
+            
+            self.post.title = post.title
+            self.post.body = post.body
         }
     }
 }
