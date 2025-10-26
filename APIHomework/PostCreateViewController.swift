@@ -58,14 +58,14 @@ extension PostCreateViewController: PostViewDelegate {
     
     func didChange(post: Post) {
         
-        if post.title.isEmpty && post.body.isEmpty {
-            
-            navigationItem.rightBarButtonItem?.isHidden = true
+        if !post.title.isEmpty && !post.body.isEmpty {
+        
+            navigationItem.rightBarButtonItem?.isHidden = false
+            self.post = post
             
         } else {
             
-            navigationItem.rightBarButtonItem?.isHidden = false
-            self.post = post
+            navigationItem.rightBarButtonItem?.isHidden = true
         }
     }
 }
