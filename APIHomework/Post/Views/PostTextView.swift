@@ -7,21 +7,21 @@
 
 import UIKit
 
-class PostView: UIView {
+class PostTextView: UIView {
     
-    weak var delegate: PostViewDelegate?
-
-    private let scrollView = UIScrollView()
-    private let stackView = UIStackView()
+    weak var delegate: PostTextViewDelegate?
     
     private let titleTextView = UITextView()
-    private let bodyTextView = UITextView()
-    
     private let titlePlaceholder = "Title"
     private var postTitle: String?
-    private var postBody: String?
+    
+    private let bodyTextView = UITextView()
+    private var postBody: String = ""
+    
+    private let scrollView = UIScrollView()
+    private let stackView = UIStackView()
 
-    init(postTitle: String? = nil, postBody: String? = nil) {
+    init(postTitle: String? = nil, postBody: String = "") {
         
         self.postTitle = postTitle
         self.postBody = postBody
@@ -31,10 +31,11 @@ class PostView: UIView {
     }
     
     required init?(coder: NSCoder) {
+        
         fatalError("init(coder:) has not been implemented")
     }
     
-    func canEdit(_ bool: Bool) {
+    func canEdit(_ bool: Bool = true) {
         
         titleTextView.isEditable = bool
         bodyTextView.isEditable = bool
@@ -46,7 +47,6 @@ class PostView: UIView {
 
         titleTextView.font = .preferredFont(forTextStyle: .extraLargeTitle2)
         titleTextView.isScrollEnabled = false
-        
         titleTextView.isEditable = false
         
         titleTextView.delegate = self
@@ -63,23 +63,20 @@ class PostView: UIView {
         }
         
         let divider = UIView()
+        let dividerThickness: CGFloat = 2
         divider.backgroundColor = .separator
-        divider.heightAnchor.constraint(equalToConstant: 3).isActive = true
-        divider.layer.cornerRadius = 1.5
+        divider.heightAnchor.constraint(equalToConstant: dividerThickness).isActive = true
+        divider.layer.cornerRadius = dividerThickness / 2
         divider.clipsToBounds = true
 
         bodyTextView.font = .preferredFont(forTextStyle: .title3)
         bodyTextView.isScrollEnabled = false
-        
         bodyTextView.isEditable = false
         
         bodyTextView.delegate = self
-
-        if let postBody {
-            
-            bodyTextView.text = postBody
-            bodyTextView.textColor = .label
-        }
+        
+        bodyTextView.text = postBody
+        bodyTextView.textColor = .label
         
         addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -107,7 +104,7 @@ class PostView: UIView {
     }
 }
 
-extension PostView: UITextViewDelegate {
+extension PostTextView: UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         

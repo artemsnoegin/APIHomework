@@ -12,7 +12,7 @@ struct Post: Codable {
     var title: String
     var body: String
     
-    init(id: Int = 0, userId: Int = 0, title: String, body: String) {
+    init(id: Int = 0, userId: Int = 0, title: String = "", body: String = "") {
         self.id = id
         self.userId = userId
         self.title = title

@@ -1,5 +1,5 @@
 //
-//  PostFeedViewController.swift
+//  PostFeedTableViewController.swift
 //  APIHomework
 //
 //  Created by Артём Сноегин on 25.10.2025.
@@ -7,11 +7,9 @@
 
 import UIKit
 
-class PostFeedViewController: UIViewController {
+class PostFeedTableViewController: UITableViewController {
     
-    private let tableView = UITableView()
     private var posts = [Post]()
-    
     private var networkService = PostNetworkService()
 
     override func viewDidLoad() {
@@ -20,9 +18,7 @@ class PostFeedViewController: UIViewController {
         view.backgroundColor = .systemBackground
         
         loadPosts()
-        
         configureNavigationBar()
-        configureTableView()
     }
     
     private func loadPosts() {
@@ -56,11 +52,11 @@ class PostFeedViewController: UIViewController {
     
     @objc private func createNewPost() {
         
-        let postCreateViewController = PostCreateViewController()
+        let createPostViewController = CreatePostViewController()
         
-        postCreateViewController.completion = { [weak self] post in
+        createPostViewController.completion = { [weak self] post in
             
-            self?.networkService.createNewPost(post) { [weak self] result in
+            self?.networkService.createNewPost(post) { result in
                 
                 switch result {
                     
@@ -76,42 +72,28 @@ class PostFeedViewController: UIViewController {
             }
         }
         
-        navigationController?.pushViewController(postCreateViewController, animated: true)
-    }
-    
-    private func configureTableView() {
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        ])
+        navigationController?.pushViewController(createPostViewController, animated: true)
     }
 }
 
-extension PostFeedViewController: UITableViewDelegate, UITableViewDataSource {
+extension PostFeedTableViewController {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         posts.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let post = posts[indexPath.row]
         
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
-        let post = posts[indexPath.row]
         
         var contentConfiguration = cell.defaultContentConfiguration()
         
         contentConfiguration.text = "Post \(post.id): \(post.title)"
         contentConfiguration.textProperties.numberOfLines = 1
+        
         contentConfiguration.secondaryText = post.body
         contentConfiguration.secondaryTextProperties.numberOfLines = 2
         
@@ -121,22 +103,21 @@ extension PostFeedViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        let post = posts[indexPath.row]
+        let selectedPost = posts[indexPath.row]
         
-        print(post)
-        let detailViewController = PostDetailViewController(post: post)
+        let detailPostViewController = DetailPostViewController(post: selectedPost)
         
-        detailViewController.completion = { [weak self] post in
+        detailPostViewController.didEditPost = { [weak self] updatedPost in
             
-            self?.networkService.updatePost(post) { [weak self] result in
+            self?.networkService.updatePost(updatedPost) { result in
                 
                 switch result {
                     
-                case .success(let post):
+                case .success(let updatedPostFromServer):
                     
-                    self?.posts[indexPath.row] = post
+                    self?.posts[indexPath.row] = updatedPostFromServer
                     self?.tableView.reloadData()
                     
                 case .failure(let error):
@@ -146,17 +127,17 @@ extension PostFeedViewController: UITableViewDelegate, UITableViewDataSource {
             }
         }
         
-        navigationController?.pushViewController(detailViewController, animated: true)
+        navigationController?.pushViewController(detailPostViewController, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         guard editingStyle == .delete else { return }
         
-        let post = posts[indexPath.row]
+        let postToDelete = posts[indexPath.row]
         
-        networkService.deletePost(post) { [weak self] result in
+        networkService.deletePost(postToDelete) { [weak self] result in
             
             DispatchQueue.main.async {
                 

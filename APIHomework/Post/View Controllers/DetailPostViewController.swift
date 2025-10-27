@@ -1,5 +1,5 @@
 //
-//  PostDetailViewController.swift
+//  DetailPostViewController.swift
 //  APIHomework
 //
 //  Created by Артём Сноегин on 25.10.2025.
@@ -7,13 +7,13 @@
 
 import UIKit
 
-class PostDetailViewController: UIViewController {
+class DetailPostViewController: UIViewController {
     
-    var completion: ((Post) -> Void)?
+    var didEditPost: ((Post) -> Void)?
     
     private var post: Post
     
-    private var postView = PostView()
+    private var postView = PostTextView()
     
     init(post: Post) {
         
@@ -23,6 +23,7 @@ class PostDetailViewController: UIViewController {
     }
     
     required init?(coder: NSCoder) {
+        
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -31,14 +32,13 @@ class PostDetailViewController: UIViewController {
         
         view.backgroundColor = .systemBackground
         
-        configureNavigationBar()
         setupPostView()
+        configureNavigationBar()
     }
 
     private func setupPostView() {
         
-        postView = PostView(postTitle: post.title, postBody: post.body)
-        postView.canEdit(false)
+        postView = PostTextView(postTitle: post.title, postBody: post.body)
         
         postView.delegate = self
         
@@ -49,7 +49,7 @@ class PostDetailViewController: UIViewController {
             postView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             postView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             postView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            postView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            postView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
@@ -62,7 +62,7 @@ class PostDetailViewController: UIViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
 
-        postView.canEdit(editing)
+        postView.canEdit()
 
         if editing {
             
@@ -71,27 +71,27 @@ class PostDetailViewController: UIViewController {
             
         } else {
             
-            completion?(post)
             view.endEditing(true)
+            didEditPost?(post)
             navigationController?.popViewController(animated: true)
         }
     }
 }
 
-extension PostDetailViewController: PostViewDelegate {
+extension DetailPostViewController: PostTextViewDelegate {
     
     func didChange(post: Post) {
         
-        if post.title.isEmpty && post.body.isEmpty {
+        if !post.title.isEmpty && !post.body.isEmpty {
 
-            editButtonItem.isEnabled = false
-                
-        } else {
-            
             editButtonItem.isEnabled = true
             
             self.post.title = post.title
             self.post.body = post.body
+                
+        } else {
+            
+            editButtonItem.isEnabled = false
         }
     }
 }

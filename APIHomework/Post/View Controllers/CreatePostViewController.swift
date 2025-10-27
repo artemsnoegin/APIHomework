@@ -1,5 +1,5 @@
 //
-//  PostCreateViewController.swift
+//  CreatePostViewController.swift
 //  APIHomework
 //
 //  Created by Артём Сноегин on 26.10.2025.
@@ -7,12 +7,13 @@
 
 import UIKit
 
-class PostCreateViewController: UIViewController {
+class CreatePostViewController: UIViewController {
     
     var completion: ((Post) -> Void)?
     
-    private let postView = PostView()
-    private var post = Post(title: "", body: "")
+    private var newPost = Post()
+    
+    private let postView = PostTextView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,8 +25,9 @@ class PostCreateViewController: UIViewController {
     }
 
     private func setupPostView() {
+        
+        postView.canEdit()
 
-        postView.canEdit(true)
         postView.delegate = self
         
         view.addSubview(postView)
@@ -35,33 +37,34 @@ class PostCreateViewController: UIViewController {
             postView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             postView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             postView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            postView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            postView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
     private func configureNavigationBar() {
         
+        title = "New Post"
         navigationItem.largeTitleDisplayMode = .never
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(savePost))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(savePost))
         navigationItem.rightBarButtonItem?.isHidden = true
     }
     
     @objc private func savePost() {
         
-        completion?(post)
+        completion?(newPost)
         navigationController?.popViewController(animated: true)
     }
 }
 
-extension PostCreateViewController: PostViewDelegate {
+extension CreatePostViewController: PostTextViewDelegate {
     
     func didChange(post: Post) {
         
         if !post.title.isEmpty && !post.body.isEmpty {
         
             navigationItem.rightBarButtonItem?.isHidden = false
-            self.post = post
+            self.newPost = post
             
         } else {
             
