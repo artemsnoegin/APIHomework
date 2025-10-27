@@ -19,6 +19,8 @@ class PostFeedTableViewController: UITableViewController {
         
         loadPosts()
         configureNavigationBar()
+        
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "\(UITableViewCell.self)")
     }
     
     private func loadPosts() {
@@ -58,16 +60,19 @@ class PostFeedTableViewController: UITableViewController {
             
             self?.networkService.createNewPost(post) { result in
                 
-                switch result {
+                DispatchQueue.main.async {
                     
-                case .success(let post):
-                    
-                    self?.posts.append(post)
-                    self?.tableView.reloadData()
-                    
-                case .failure(let error):
-                    
-                    print("Failed creating new post: \(error)")
+                    switch result {
+                        
+                    case .success(let post):
+                        
+                        self?.posts.append(post)
+                        self?.tableView.reloadData()
+                        
+                    case .failure(let error):
+                        
+                        print("Failed creating new post: \(error)")
+                    }
                 }
             }
         }
@@ -87,7 +92,7 @@ extension PostFeedTableViewController {
         
         let post = posts[indexPath.row]
         
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "\(UITableViewCell.self)", for: indexPath)
         
         var contentConfiguration = cell.defaultContentConfiguration()
         
@@ -113,16 +118,19 @@ extension PostFeedTableViewController {
             
             self?.networkService.updatePost(updatedPost) { result in
                 
-                switch result {
+                DispatchQueue.main.async {
                     
-                case .success(let updatedPostFromServer):
-                    
-                    self?.posts[indexPath.row] = updatedPostFromServer
-                    self?.tableView.reloadData()
-                    
-                case .failure(let error):
-                    
-                    print("Couldn't update post: \(error)")
+                    switch result {
+                        
+                    case .success(let updatedPostFromServer):
+                        
+                        self?.posts[indexPath.row] = updatedPostFromServer
+                        self?.tableView.reloadData()
+                        
+                    case .failure(let error):
+                        
+                        print("Couldn't update post: \(error)")
+                    }
                 }
             }
         }

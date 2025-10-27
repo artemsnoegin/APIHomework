@@ -13,7 +13,7 @@ class CreatePostViewController: UIViewController {
     
     private var newPost = Post()
     
-    private let postView = PostTextView()
+    private let postTextView = PostTextView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,24 +26,23 @@ class CreatePostViewController: UIViewController {
 
     private func setupPostView() {
         
-        postView.canEdit()
+        postTextView.canEdit()
 
-        postView.delegate = self
+        postTextView.delegate = self
         
-        view.addSubview(postView)
-        postView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(postTextView)
+        postTextView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            postView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            postView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            postView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            postView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            postTextView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            postTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            postTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            postTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
     private func configureNavigationBar() {
         
-        title = "New Post"
         navigationItem.largeTitleDisplayMode = .never
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(savePost))

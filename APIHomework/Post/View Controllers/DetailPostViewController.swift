@@ -13,7 +13,7 @@ class DetailPostViewController: UIViewController {
     
     private var post: Post
     
-    private var postView = PostTextView()
+    private var postTextView = PostTextView()
     
     init(post: Post) {
         
@@ -38,18 +38,18 @@ class DetailPostViewController: UIViewController {
 
     private func setupPostView() {
         
-        postView = PostTextView(postTitle: post.title, postBody: post.body)
+        postTextView = PostTextView(post: post)
         
-        postView.delegate = self
+        postTextView.delegate = self
         
-        view.addSubview(postView)
-        postView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(postTextView)
+        postTextView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            postView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            postView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            postView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            postView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            postTextView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            postTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            postTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            postTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
@@ -62,18 +62,18 @@ class DetailPostViewController: UIViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
 
-        postView.canEdit()
+        postTextView.canEdit()
 
         if editing {
             
-//            bodyTextView.becomeFirstResponder()
+            postTextView.makeBodyTextViewFirstResponder()
             editButtonItem.tintColor = .systemGreen
             
         } else {
             
             view.endEditing(true)
             didEditPost?(post)
-            navigationController?.popViewController(animated: true)
+            editButtonItem.tintColor = .label
         }
     }
 }

@@ -46,18 +46,15 @@ class PostNetworkService {
         let dataTask = URLSession.shared.dataTask(with: request) { data, _, error in
             
             guard let data = data else { return }
-            
-            DispatchQueue.main.async {
                 
-                do {
-                    
-                    let post = try JSONDecoder().decode(Post.self, from: data)
-                    completion(.success(post))
-                    
-                } catch {
-                    
-                    completion(.failure(error))
-                }
+            do {
+                
+                let post = try JSONDecoder().decode(Post.self, from: data)
+                completion(.success(post))
+                
+            } catch {
+                
+                completion(.failure(error))
             }
         }
         
@@ -80,17 +77,14 @@ class PostNetworkService {
             
             guard let data = data else { return }
             
-            DispatchQueue.main.async {
+            do {
                 
-                do {
-                    
-                    let post = try JSONDecoder().decode(Post.self, from: data)
-                    completion(.success(post))
-                    
-                } catch {
-                    
-                    completion(.failure(error))
-                }
+                let post = try JSONDecoder().decode(Post.self, from: data)
+                completion(.success(post))
+                
+            } catch {
+                
+                completion(.failure(error))
             }
         }
         
