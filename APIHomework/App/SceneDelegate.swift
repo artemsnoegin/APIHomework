@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let postsVC = UINavigationController(rootViewController: PostFeedTableViewController())
         postsVC.tabBarItem = UITabBarItem(title: "Posts", image: UIImage(systemName: "book"), selectedImage: UIImage(systemName: "book.fill"))
         
-        let usersVC = UINavigationController(rootViewController: UserFeedTableViewController())
+        let usersVC = UINavigationController(rootViewController: UserListTableViewController())
         usersVC.tabBarItem = UITabBarItem(title: "Users", image: (UIImage(systemName: "person")), selectedImage: UIImage(systemName: "person.fill"))
         
         let tabBarController = UITabBarController()
