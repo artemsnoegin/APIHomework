@@ -18,10 +18,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
         
-        let rootViewController = PostFeedTableViewController()
-        let navigationController = UINavigationController(rootViewController: rootViewController)
+        let postsVC = UINavigationController(rootViewController: PostFeedTableViewController())
+        postsVC.tabBarItem = UITabBarItem(title: "Posts", image: UIImage(systemName: "book"), selectedImage: UIImage(systemName: "book.fill"))
         
-        window.rootViewController = navigationController
+        let usersVC = UINavigationController(rootViewController: UserFeedTableViewController())
+        usersVC.tabBarItem = UITabBarItem(title: "Users", image: (UIImage(systemName: "person")), selectedImage: UIImage(systemName: "person.fill"))
+        
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [postsVC, usersVC]
+        tabBarController.tabBar.tintColor = .label
+        
+        window.rootViewController = tabBarController
         
         self.window = window
         window.makeKeyAndVisible()

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		D91C60472EAF5F57000296A6 /* APIHomework.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = APIHomework.app; path = "/Users/artemsnoegin/Desktop/Development/TeachMeSkills/Homework Projects/APIHomework/build/Debug-iphoneos/APIHomework.app"; sourceTree = "<absolute>"; };
+		D94308E02EB211BA008FC955 /* APIHomework.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIHomework.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,6 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				D91C5FFA2EACDEB6000296A6 /* APIHomework */,
+				D94308E02EB211BA008FC955 /* APIHomework.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,7 +72,7 @@
 			packageProductDependencies = (
 			);
 			productName = APIHomework;
-			productReference = D91C60472EAF5F57000296A6 /* APIHomework.app */;
+			productReference = D94308E02EB211BA008FC955 /* APIHomework.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

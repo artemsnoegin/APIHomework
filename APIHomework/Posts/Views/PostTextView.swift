@@ -134,8 +134,8 @@ class PostTextView: UIView {
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
         else { return }
         
-            scrollView.contentInset.bottom = keyboardFrame.height
-            layoutIfNeeded()
+        scrollView.contentInset.bottom = keyboardFrame.height
+        layoutIfNeeded()
     }
     
     @objc private func keyboardWillHide(_ notification: Notification) {
